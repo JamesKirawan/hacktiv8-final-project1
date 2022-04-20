@@ -1,10 +1,9 @@
 {
   "development": {
     "username": "postgres",
-    "password": null,
+    "password": "shanjita",
     "database": "FinalProject1",
-    "host": "127.0.0.1",
-    "port": 4000,
+    "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
