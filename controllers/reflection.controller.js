@@ -59,11 +59,12 @@ exports.deleteReflection = async(req, res) => {
 
 exports.updateReflection = async(req, res) => {
   const id = req.params.id
+  const user_id = req.user_id;
   let success = req.body.success;
   let low_point = req.body.low_point;
   let take_away = req.body.take_away;
 
-  await db.query("UPDATE Reflections SET success = $1, low_point =$2, take_away=$3 WHERE id = $4", [success, low_point, take_away, id])
+  await db.query("UPDATE Reflections SET success = $1, low_point =$2, take_away=$3 WHERE id = $4 and user_id = $5", [success, low_point, take_away, id, user_id])
       .then(result => {
           res.status(200).json({
               "status": "sukses",
@@ -71,7 +72,7 @@ exports.updateReflection = async(req, res) => {
       }).catch(e => {
           console.log(e)
           res.status(404).json({
-              "message": "INTERNAL SERVER ERROR"
+              "message": "Gagal melakukan update"
           })
       })
 }
