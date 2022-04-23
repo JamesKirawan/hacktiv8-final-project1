@@ -44,7 +44,8 @@ exports.getReflection = async (req, res) => {
 
 exports.deleteReflection = async(req, res) => {
   const id = req.params.id
-  await db.query("delete from Reflections where id = $1", [id]).then(result => {
+  const user_id = req.user_id;
+  await db.query("delete from Reflections where id = $1 and user_id = $2", [id, user_id]).then(result => {
           res.status(200).json({
               "data": "sukses",
           })
@@ -52,7 +53,7 @@ exports.deleteReflection = async(req, res) => {
       .catch(e => {
           console.log(e)
           res.status(404).json({
-              "message": "INTERNAL SERVER ERROR"
+              "message": "Gagal menghapus data"
           })
       })
 };
