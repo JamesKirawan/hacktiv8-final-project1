@@ -29,66 +29,49 @@ exports.postReflection = async (req, res) => {
   }
 };
 
-// // exports.getReflection = async (req, res) => {
-// //   return Reflection.findAll()
-// //     .then((reflection) => {
-// //       res.status(201).send({
-// //         data: reflection,
-// //       });
-// //     })
-// //     .catch((e) => {
-// //       console.log(e);
-// //       res.status(503).send({
-// //         status: "FAIL",
-// //         message: "Gagal menampilkan refleksi",
-// //       });
-// //     });
-// // };
+exports.getReflection = async (req, res) => {
+  await db.query("select * from Reflections").then(result => {
+      res.status(200).json({
+          "data": result.rows
+      })
+  }).catch(e => {
+      console.log(e)
+      res.status(500).json({
+          message : 'INTERNAL SERVER ERROR'
+      })
+  })
+}
 
-// // exports.deleteReflection = async (req, res) => {
-// //   const id = req.params.id;
-// //   return Reflection.destroy({ where: { id: id } })
-// //     .then((reflection) => {
-// //       res.status(201).json({
-// //         data: "sukses",
-// //       });
-// //     })
-// //     .catch((e) => {
-// //       console.log(e);
-// //       res.status(503).json({
-// //         message: "INTERNAL SERVER ERROR",
-// //       });
-// //     });
-// // };
+exports.deleteReflection = async(req, res) => {
+  const id = req.params.id
+  await db.query("delete from Reflections where id = $1", [id]).then(result => {
+          res.status(200).json({
+              "data": "sukses",
+          })
+      })
+      .catch(e => {
+          console.log(e)
+          res.status(404).json({
+              "message": "INTERNAL SERVER ERROR"
+          })
+      })
+};
 
-// // exports.putReflection = async (req, res) => {
-// //   const id = req.params.id;
-// //   let success = req.body.success;
-// //   let low_point = req.body.low_point;
-// //   let take_away = req.body.take_away;
+exports.updateReflection = async(req, res) => {
+  const id = req.params.id
+  let success = req.body.success;
+  let low_point = req.body.low_point;
+  let take_away = req.body.take_away;
 
-// //   const user_id = req.user_id;
-// //   let data = {
-// //     success,
-// //     low_point,
-// //     take_away,
-// //     user_id,
-// //   };
-// //   return Reflection.update(data, {
-// //     where: {
-// //       id: id,
-// //     },
-// //   })
-// //     .then((reflection) => {
-// //       res.status(201).send({
-// //         status: "Berhasil mengupdate reflection",
-// //         data: reflection,
-// //       });
-// //     })
-// //     .catch((e) => {
-// //       console.log(e);
-// //       res.status(503).send({
-// //         message: "Gagal mengupdate reflection",
-// //       });
-// //     });
-// // };
+  await db.query("UPDATE Reflections SET success = $1, low_point =$2, take_away=$3 WHERE id = $4", [success, low_point, take_away, id])
+      .then(result => {
+          res.status(200).json({
+              "status": "sukses",
+          });
+      }).catch(e => {
+          console.log(e)
+          res.status(404).json({
+              "message": "INTERNAL SERVER ERROR"
+          })
+      })
+}

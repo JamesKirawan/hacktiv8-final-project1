@@ -30,7 +30,7 @@ exports.registerUser = async (req, res) => {
       });
     }
   } catch (e) {
-    return res.status(503).send(e);
+    return res.status(503).send(e.message);
   }
 };
 
@@ -61,6 +61,6 @@ exports.loginUser = async (req, res) => {
       });
     }
   } catch (e) {
-    return res.status(503).send(e);
+    return res.status(503).send(e.message);
   }
 };

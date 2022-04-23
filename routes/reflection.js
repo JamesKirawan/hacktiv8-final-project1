@@ -10,8 +10,8 @@ router.post(
   reflection.validatePostReflection,
   controller.postReflection
 );
-// router.get("/", auth.verify, controller.getReflection);
-// router.put("/:id", auth.verify, controller.putReflection);
-// router.delete("/:id", auth.verify, controller.deleteReflection);
+router.get("/", auth.verify, controller.getReflection);
+router.put("/:id", auth.verify, reflection.validatePutReflection, controller.updateReflection);
+router.delete("/:id", auth.verify, controller.deleteReflection);
 
 module.exports = router;

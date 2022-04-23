@@ -12,3 +12,16 @@ exports.validatePostReflection = async (req, res, next) => {
     next();
   }
 };
+
+exports.validatePutReflection = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    success: Joi.string().empty(""),
+    low_point: Joi.string().empty(""),
+    take_away: Joi.string().empty(""),
+  });
+  if (schema.validate(req.body).error) {
+    res.send(schema.validate(req.body).error.details);
+  } else {
+    next();
+  }
+};
