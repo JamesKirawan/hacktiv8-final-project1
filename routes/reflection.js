@@ -11,7 +11,12 @@ router.post(
   controller.postReflection
 );
 router.get("/", auth.verify, controller.getReflection);
-router.put("/:id", auth.verify, reflection.validatePutReflection, controller.updateReflection);
+router.put(
+  "/:id",
+  auth.verify,
+  reflection.validatePutReflection,
+  controller.updateReflection
+);
 router.delete("/:id", auth.verify, controller.deleteReflection);
 
 module.exports = router;

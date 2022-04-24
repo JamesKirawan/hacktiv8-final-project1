@@ -1,8 +1,8 @@
 const ReflectionController = require("../controllers/reflection.controller");
 const httpMocks = require("node-mocks-http");
-const db = require("../config/db.js");
+const { db } = require("../config/db.js");
 
-jest.mock('../config/db.js');
+jest.mock("../config/db.js");
 
 let req, res;
 
@@ -18,9 +18,16 @@ const reflectionData = {
 };
 
 describe("ReflectionController.postReflection", () => {
-  it("should return 503", async () => {
+  it("should return 200", async () => {
     req.body = reflectionData;
-    db.db.query.mockResolvedValue(reflectionData)
+    db.query.mockResolvedValue(reflectionData);
+    await ReflectionController.postReflection(req, res);
+    expect(res.statusCode).toBe(200);
+  });
+  it("should return 503", async () => {
+    const rejected = Promise.reject({ message: "Error" });
+    req.body = reflectionData;
+    db.query.mockResolvedValue(rejected);
     await ReflectionController.postReflection(req, res);
     expect(res.statusCode).toBe(503);
   });
@@ -29,13 +36,13 @@ describe("ReflectionController.postReflection", () => {
 describe("ReflectionController.getReflection", () => {
   it("should return 200", async () => {
     req.body = reflectionData;
-    db.db.query.mockResolvedValue(reflectionData)
+    db.query.mockResolvedValue(reflectionData);
     await ReflectionController.getReflection(req, res);
     expect(res.statusCode).toBe(200);
   });
   it("should return 500", async () => {
-    const rejected = Promise.reject({ message: "ini error"});
-    db.db.query.mockResolvedValue(rejected)
+    const rejected = Promise.reject({ message: "ini error" });
+    db.query.mockResolvedValue(rejected);
     req.body = reflectionData;
     await ReflectionController.getReflection(req, res);
     expect(res.statusCode).toBe(500);
@@ -45,13 +52,13 @@ describe("ReflectionController.getReflection", () => {
 describe("ReflectionController.deleteReflection", () => {
   it("should return 200", async () => {
     req.body = reflectionData;
-    db.db.query.mockResolvedValue(reflectionData)
+    db.query.mockResolvedValue(reflectionData);
     await ReflectionController.deleteReflection(req, res);
     expect(res.statusCode).toBe(200);
   });
   it("should return 404", async () => {
-    const rejected = Promise.reject({ message: "ini error"});
-    db.db.query.mockResolvedValue(rejected)
+    const rejected = Promise.reject({ message: "ini error" });
+    db.query.mockResolvedValue(rejected);
     req.body = reflectionData;
     await ReflectionController.deleteReflection(req, res);
     expect(res.statusCode).toBe(404);
@@ -61,13 +68,13 @@ describe("ReflectionController.deleteReflection", () => {
 describe("ReflectionController.updateReflection", () => {
   it("should return 200", async () => {
     req.body = reflectionData;
-    db.db.query.mockResolvedValue(reflectionData)
+    db.query.mockResolvedValue(reflectionData);
     await ReflectionController.updateReflection(req, res);
     expect(res.statusCode).toBe(200);
   });
   it("should return 404", async () => {
-    const rejected = Promise.reject({ message: "ini error"});
-    db.db.query.mockResolvedValue(rejected)
+    const rejected = Promise.reject({ message: "ini error" });
+    db.query.mockResolvedValue(rejected);
     req.body = reflectionData;
     await ReflectionController.updateReflection(req, res);
     expect(res.statusCode).toBe(404);

@@ -13,25 +13,22 @@ exports.postReflection = async (req, res) => {
   const user_id = req.user_id;
   const queryText = `insert into reflections(id, success, low_point, take_away, owner_id, created_date, modified_date)
   values('${id}', '${success}', '${low_point}', '${take_away}', '${user_id}', '${createdDate.toISOString()}', '${modifiedDate.toISOString()}') returning *`;
-  try {
-    const { rows } = await db.query(queryText);
-    return res.status(200).send({
-      id: rows[0].id,
-      success: rows[0].success,
-      low_point: rows[0].low_point,
-      take_away: rows[0].take_away,
-      owner_id: rows[0].owner_id,
-      created_date: rows[0].created_date,
-      modified_date: rows[0].modified_date,
+  await db
+    .query(queryText)
+    .then((reflection) => {
+      res.status(200).send({
+        data: reflection.rows,
+      });
+    })
+    .catch((e) => {
+      res.status(503).send(e);
     });
-  } catch (e) {
-    return res.status(503).send(e);
-  }
 };
 
 exports.getReflection = async (req, res) => {
+  const user_id = req.user_id;
   await db
-    .query("select * from Reflections")
+    .query("select * from reflections where owner_id = $1", [user_id])
     .then((result) => {
       res.status(200).json({
         data: result.rows,
@@ -48,13 +45,13 @@ exports.deleteReflection = async (req, res) => {
   const id = req.params.id;
   const user_id = req.user_id;
   await db
-    .query("delete from Reflections where id = $1 and user_id = $2", [
+    .query("delete from reflections where id = $1 and owner_id = $2", [
       id,
       user_id,
     ])
     .then((result) => {
       res.status(200).json({
-        data: "sukses",
+        data: "Sukses",
       });
     })
     .catch((e) => {
@@ -73,12 +70,12 @@ exports.updateReflection = async (req, res) => {
 
   await db
     .query(
-      "UPDATE Reflections SET success = $1, low_point =$2, take_away=$3 WHERE id = $4 and user_id = $5",
+      "UPDATE reflections SET success = $1, low_point = $2, take_away = $3 WHERE id = $4 and owner_id = $5 returning *",
       [success, low_point, take_away, id, user_id]
     )
     .then((result) => {
       res.status(200).json({
-        status: "sukses",
+        data: result.rows,
       });
     })
     .catch((e) => {
