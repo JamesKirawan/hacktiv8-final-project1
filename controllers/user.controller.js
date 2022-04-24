@@ -15,22 +15,26 @@ exports.registerUser = async (req, res) => {
   values('${id}', '${email}', '${password}', '${createdDate.toISOString()}', '${modifiedDate.toISOString()}')
   returning *`;
   const validateQueryText = `select * from users where email = '${email}'`;
-  try {
-    const user = await db.query(validateQueryText);
-    if (user.rows.length === 0) {
-      const { rows } = await db.query(queryText);
-      const token = generateToken({
-        id: rows[0].id,
-        email: rows[0].email,
+  const validateUser = await db.query(validateQueryText);
+  if (validateUser.rows.length === 0) {
+    await db
+      .query(queryText)
+      .then((user) => {
+        const token = generateToken({
+          id: user.id,
+          email: user.email,
+        });
+        res.status(200).json({
+          token,
+        });
+      })
+      .catch((e) => {
+        res.status(503).send(e.message);
       });
-      return res.status(200).send({ token });
-    } else {
-      return res.status(400).send({
-        message: `Email (${email}) Sudah Terdaftar`,
-      });
-    }
-  } catch (e) {
-    return res.status(503).send(e.message);
+  } else {
+    res.status(400).send({
+      message: `Email (${email}) Sudah Tedaftar`,
+    });
   }
 };
 
@@ -39,28 +43,24 @@ exports.loginUser = async (req, res) => {
   const email = body.email;
   const password = body.password;
   const queryText = `select * from users where email = '${email}'`;
-  try {
-    const { rows } = await db.query(queryText);
-    if (rows.length !== 0) {
-      if (comparePassword(password, rows[0].password)) {
-        const token = generateToken({
-          id: rows[0].id,
-          email: rows[0].email,
-        });
-        return res.status(200).send({
-          token,
-        });
-      } else {
-        return res.status(400).send({
-          message: "Password Tidak Sesuai",
-        });
-      }
+  const validateEmail = await db.query(queryText);
+  if (validateEmail.rows.length !== 0) {
+    if (comparePassword(password, validateEmail.rows[0].password)) {
+      const token = generateToken({
+        id: validateEmail.rows[0].id,
+        email: validateEmail.rows[0].email,
+      });
+      return res.status(200).send({
+        token,
+      });
     } else {
-      return res.status(503).send({
-        message: `Email (${email}) Tidak Terdaftar`,
+      return res.status(400).send({
+        message: "Password Tidak Sesuai",
       });
     }
-  } catch (e) {
-    return res.status(503).send(e.message);
+  } else {
+    res.status(503).send({
+      message: `Email (${email}) Tidak Terdaftar`,
+    });
   }
 };
