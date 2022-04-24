@@ -44,21 +44,32 @@ exports.getReflection = async (req, res) => {
 exports.deleteReflection = async (req, res) => {
   const id = req.params.id;
   const user_id = req.user_id;
-  await db
-    .query("delete from reflections where id = $1 and owner_id = $2", [
-      id,
-      user_id,
-    ])
-    .then((result) => {
-      res.status(200).json({
-        data: "Sukses",
-      });
-    })
-    .catch((e) => {
-      res.status(404).json({
-        message: "Gagal menghapus data",
-      });
+  const validateQueryText = `select * from reflections where id = '${id}'`;
+  const validateReflection = await db.query(validateQueryText);
+  if (validateReflection.rows.length === 0) {
+    res.status(503).send({
+      message: "Reflection not found",
     });
+  } else {
+    if (validateReflection.rows[0].owner_id === user_id) {
+      await db
+        .query("delete from reflections where id = $1", [id])
+        .then((result) => {
+          res.status(200).json({
+            message: "Sukses",
+          });
+        })
+        .catch((e) => {
+          res.status(404).send({
+            message: "Gagal menghapus data",
+          });
+        });
+    } else {
+      res.status(401).json({
+        message: "Anda Tidak Memiliki Hak Untuk Menghapus Reflection Ini",
+      });
+    }
+  }
 };
 
 exports.updateReflection = async (req, res) => {
@@ -67,20 +78,33 @@ exports.updateReflection = async (req, res) => {
   let success = req.body.success;
   let low_point = req.body.low_point;
   let take_away = req.body.take_away;
-
-  await db
-    .query(
-      "UPDATE reflections SET success = $1, low_point = $2, take_away = $3 WHERE id = $4 and owner_id = $5 returning *",
-      [success, low_point, take_away, id, user_id]
-    )
-    .then((result) => {
-      res.status(200).json({
-        data: result.rows,
-      });
-    })
-    .catch((e) => {
-      res.status(404).json({
-        message: "Gagal melakukan update",
-      });
+  const validateQueryText = `select * from reflections where id = '${id}'`;
+  const validateReflection = await db.query(validateQueryText);
+  if (validateReflection.rows.length === 0) {
+    res.status(503).json({
+      message: "Reflection not found",
     });
+  } else {
+    if (validateReflection.rows[0].owner_id === user_id) {
+      await db
+        .query(
+          "UPDATE reflections SET success = $1, low_point = $2, take_away = $3 WHERE id = $4 and owner_id = $5 returning *",
+          [success, low_point, take_away, id, user_id]
+        )
+        .then((result) => {
+          res.status(200).json({
+            data: result.rows,
+          });
+        })
+        .catch((e) => {
+          res.status(404).json({
+            message: "Gagal melakukan update",
+          });
+        });
+    } else {
+      res.status(401).json({
+        message: "Anda Tidak Memiliki Hak Untuk Mengubah Reflection Ini",
+      });
+    }
+  }
 };
