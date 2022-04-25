@@ -1,10 +1,12 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "",
-    "database": "FinalProject1",
-    "host": "localhost",
-    "dialect": "postgres"
+    "development": {
+      "username": "postgres",
+      "password": "",
+      "database": "FinalProject1",
+      "host": "localhost",
+      "dialect": "postgres"
+    }
   },
   "test": {
     "username": "root",
@@ -14,10 +16,17 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "gpxvmnewmaefnd",
+    "password": "55cfe45dee7ac6eb51305138ace1bcba6ede7b5d8b8a8a9049684e32b809a082",
+    "database": "d550lquh841sq1",
+    "host": "ec2-34-207-12-160.compute-1.amazonaws.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
+    "port": 5432
   }
 }

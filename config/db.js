@@ -1,12 +1,25 @@
 const Pool = require("pg").Pool;
+const { Client } = require("pg");
 
-const db = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "FinalProject1",
-  password: "",
-  port: "4000",
+const db = new Client({
+  user: "gpxvmnewmaefnd",
+  host: "ec2-34-207-12-160.compute-1.amazonaws.com",
+  database: "d550lquh841sq1",
+  password: "55cfe45dee7ac6eb51305138ace1bcba6ede7b5d8b8a8a9049684e32b809a082",
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+    requestCert: true,
+  },
 });
+
+// const db = new Pool({
+//   user: "postgres",
+//   host: "localhost",
+//   database: "FinalProject1",
+//   password: "",
+//   port: "4000",
+// });
 
 /**
  * Create User Table
