@@ -1,7 +1,6 @@
 const Pool = require("pg").Pool;
-const { Client } = require("pg");
 
-const db = new Client({
+const db = new Pool({
   user: "gpxvmnewmaefnd",
   host: "ec2-34-207-12-160.compute-1.amazonaws.com",
   database: "d550lquh841sq1",
