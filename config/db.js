@@ -1,16 +1,19 @@
 const Pool = require("pg").Pool;
+const config = require("./config")[process.env.NODE_ENV];
 
-const db = new Pool({
-  user: "wozvolkgzgqoix",
-  host: "ec2-54-80-122-11.compute-1.amazonaws.com",
-  database: "desdib6tqi3mbf",
-  password: "3afd985384e105cffe7a290472aa1c6c97683cefacd6b0cfe0e44327d64fc37d",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-    requestCert: true,
-  },
-});
+const db = new Pool(config);
+console.log(config);
+// const db = new Pool({
+//   user: "wozvolkgzgqoix",
+//   host: "ec2-54-80-122-11.compute-1.amazonaws.com",
+//   database: "desdib6tqi3mbf",
+//   password: "3afd985384e105cffe7a290472aa1c6c97683cefacd6b0cfe0e44327d64fc37d",
+//   port: 5432,
+//   ssl: {
+//     rejectUnauthorized: false,
+//     requestCert: true,
+//   },
+// });
 
 // const db = new Pool({
 //   user: "postgres",

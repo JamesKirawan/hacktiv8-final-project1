@@ -6,7 +6,9 @@ exports.validateRegisterBody = async (req, res, next) => {
     password: Joi.string().required(),
   });
   if (schema.validate(req.body).error) {
-    res.send(schema.validate(req.body).error.details);
+    res.json({
+      error: schema.validate(req.body).error.message,
+    });
   } else {
     next();
   }
@@ -18,7 +20,9 @@ exports.validateLoginBody = async (req, res, next) => {
     password: Joi.string().required(),
   });
   if (schema.validate(req.body).error) {
-    res.send(schema.validate(req.body).error.details);
+    res.json({
+      error: schema.validate(req.body).error.message,
+    });
   } else {
     next();
   }
