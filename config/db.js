@@ -2,7 +2,6 @@ const Pool = require("pg").Pool;
 const config = require("./config")[process.env.NODE_ENV];
 
 const db = new Pool(config);
-console.log(config);
 // const db = new Pool({
 //   user: "wozvolkgzgqoix",
 //   host: "ec2-54-80-122-11.compute-1.amazonaws.com",

@@ -7,7 +7,7 @@ exports.validatePostReflection = async (req, res, next) => {
     take_away: Joi.string().required(),
   });
   if (schema.validate(req.body).error) {
-    res.send(schema.validate(req.body).error.details);
+    res.json({ error: schema.validate(req.body).error.message });
   } else {
     next();
   }
@@ -20,7 +20,9 @@ exports.validatePutReflection = async (req, res, next) => {
     take_away: Joi.string().empty(""),
   });
   if (schema.validate(req.body).error) {
-    res.send(schema.validate(req.body).error.details);
+    res.json({
+      error: schema.validate(req.body).error.message,
+    });
   } else {
     next();
   }
